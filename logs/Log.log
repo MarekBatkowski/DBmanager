@@ -1,0 +1,177 @@
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-11 13:05:53
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-11 13:05:53
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 13:05:53
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 13:05:53
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-11 13:06:04
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-11 13:06:48
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-11 13:06:48
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 13:06:48
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 13:06:48
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-11 13:06:57
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-11 13:51:47
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-11 13:51:48
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 13:51:48
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 13:51:48
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-11 13:51:57
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-11 14:40:53
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-11 14:40:54
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 14:40:54
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 14:40:54
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-11 14:41:05
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-11 18:26:52
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-11 18:26:52
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 18:26:52
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 18:26:52
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-11 18:32:17
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-11 18:32:18
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 18:32:18
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 18:32:18
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-11 18:32:33
+[TRACE] GUI.MainWindow - Application closed with exit code 0 - 2018-12-11 18:32:43
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-11 22:29:31
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-11 22:29:32
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 22:29:32
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-11 22:29:32
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-11 22:29:43
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-12 09:32:54
+[ERROR] GUI.LoginForm - Couldn't get connection to database - 2018-12-12 09:32:55
+[TRACE] GUI.LoginForm - Application closed with exit code 1 - 2018-12-12 09:32:55
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-12 09:34:54
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-12 09:34:54
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 09:34:54
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 09:34:54
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-12 09:35:15
+[TRACE] GUI.MainWindow - j.kowalski@gmail.comchanged email - 2018-12-12 09:36:11
+[TRACE] GUI.MainWindow - j.kowalski@gmail.comlogged out - 2018-12-12 09:38:12
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 09:38:12
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 09:38:12
+[TRACE] GUI.LoginForm - Application closed with exit code 0 - 2018-12-12 09:38:16
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-12 09:42:15
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-12 09:42:16
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 09:42:16
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 09:42:16
+[TRACE] GUI.LoginForm - Application closed with exit code 0 - 2018-12-12 09:42:18
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-12 10:07:58
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-12 10:07:59
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 10:07:59
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 10:07:59
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-12 10:08:49
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-12 10:08:49
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 10:08:49
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 10:08:49
+[TRACE] GUI.LoginForm - Created new user mb@gmail.com - 2018-12-12 10:09:25
+[TRACE] GUI.LoginForm - User mb@gmail.com logged - 2018-12-12 10:09:39
+[TRACE] GUI.MainWindow - mb@gmail.comchanged email - 2018-12-12 10:11:27
+[TRACE] GUI.MainWindow - mb@gmail.comchanged email - 2018-12-12 10:11:44
+[TRACE] GUI.MainWindow - mb@gmail.comremoved his account - 2018-12-12 10:12:09
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 10:12:09
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 10:12:09
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-12 10:12:58
+[TRACE] GUI.MainWindow - Application closed with exit code 0 - 2018-12-12 10:15:56
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-12 10:28:07
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-12 10:28:08
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 10:28:08
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 10:28:08
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-12 10:28:19
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-12 10:32:01
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-12 10:32:02
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 10:32:02
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-12 10:32:02
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-12 10:32:12
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-13 19:16:02
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-13 19:16:02
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-13 19:16:02
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-13 19:16:02
+[WARN] GUI.LoginForm - Incorrect user data provided using email: j.kowalski@gmail.com - 2018-12-13 19:16:12
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-13 19:16:36
+[TRACE] GUI.MainWindow - j.kowalski@gmail.comlogged out - 2018-12-13 19:16:49
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-13 19:16:49
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-13 19:16:49
+[TRACE] GUI.LoginForm - Application closed with exit code 0 - 2018-12-13 21:03:27
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-13 21:39:22
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-13 21:39:22
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-13 21:39:22
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-13 21:39:22
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-13 22:27:43
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-13 22:27:43
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-13 22:27:43
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-13 22:27:43
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-13 22:27:59
+[TRACE] GUI.MainWindow - Application closed with exit code 0 - 2018-12-13 22:40:22
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-13 23:04:47
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-13 23:04:47
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-13 23:04:47
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-13 23:04:48
+[WARN] GUI.LoginForm - Incorrect user data provided using email: j.kowalski@gmail.com - 2018-12-13 23:05:01
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-13 23:05:07
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-14 21:24:47
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-14 21:24:47
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-14 22:37:08
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-14 22:37:08
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:37:08
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:37:09
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-14 22:37:21
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-14 22:38:16
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-14 22:38:18
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:38:18
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:38:18
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-14 22:38:35
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-14 22:41:11
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-14 22:41:12
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:41:12
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:41:12
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-14 22:41:18
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-14 22:41:18
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:41:18
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:41:19
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-14 22:41:27
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-14 22:47:35
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-14 22:47:36
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:47:36
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:47:36
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-14 22:47:45
+[TRACE] GUI.MainWindow - Application closed with exit code 0 - 2018-12-14 22:48:28
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-14 22:51:24
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-14 22:51:24
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:51:24
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 22:51:25
+[TRACE] GUI.LoginForm - Application closed with exit code 0 - 2018-12-14 23:51:34
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-14 23:57:59
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-14 23:58:00
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 23:58:00
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 23:58:00
+[TRACE] GUI.LoginForm - Application closed with exit code 0 - 2018-12-14 23:58:02
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-14 23:59:41
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-14 23:59:41
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 23:59:41
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-14 23:59:41
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-14 23:59:52
+[TRACE] GUI.MainWindow - Application closed with exit code 0 - 2018-12-15 00:00:30
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-15 21:22:39
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-15 21:22:39
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-15 21:22:39
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-15 21:22:39
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-15 21:22:51
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-15 22:32:36
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-15 22:32:37
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-15 22:32:37
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-15 22:32:37
+[WARN] GUI.LoginForm - Incorrect user data provided using email: j.kowalski@gmail.com - 2018-12-15 22:32:46
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-15 22:32:56
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-15 22:35:10
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-15 22:35:10
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-15 22:35:10
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-15 22:35:10
+[WARN] GUI.LoginForm - Incorrect user data provided using email: j.kowlaski@gmail.com - 2018-12-15 22:35:20
+[WARN] GUI.LoginForm - Incorrect user data provided using email: j.kowlaski@gmail.com - 2018-12-15 22:35:27
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-15 22:35:33
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-16 01:22:51
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-16 01:22:52
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-16 01:22:52
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-16 01:22:52
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-16 01:23:02
+[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2018-12-16 01:26:27
+[TRACE] SQLhandling.DBConnection - Connected to database - 2018-12-16 01:26:28
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-16 01:26:28
+[TRACE] GUI.LoginForm - Connected to Database - 2018-12-16 01:26:28
+[TRACE] GUI.LoginForm - User j.kowalski@gmail.com logged - 2018-12-16 01:26:45
