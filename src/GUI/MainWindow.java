@@ -84,10 +84,17 @@ public class MainWindow
         wszystkiePaczkiButton.setBackground( 1==card ? Color.WHITE : null );
         dostawcyButton.setBackground( 2==card ? Color.WHITE: null );
         mojeKontoButton.setBackground( 3==card ? Color.WHITE: null );
+
+        if(card==0) frame.setTitle("DBmanager - moje paczki");
+        if(card==1) frame.setTitle("DBmanager - wszystkie paczki");
+        if(card==2) frame.setTitle("DBmanager - dostawcy");
+        if(card==3) frame.setTitle("DBmanager - moje konto");
     }
 
     public MainWindow()
     {
+        System.out.println("Creating MainForm");
+
         final Logger logger = Logger.getLogger(MainWindow.class);
 
         Cards.add(MyParcels, "MyParcels");
@@ -96,7 +103,25 @@ public class MainWindow
         Cards.add(MyAccount, "MyAccount");
 
         CardLayout cards = (CardLayout) (Cards.getLayout());
+
+        // initial card
         cards.show(Cards, "MyParcels");
+        mojePaczkiButton.setEnabled(false);
+        mojePaczkiButton.setBackground(Color.WHITE);
+
+        // changeActiveCard(0);
+
+        MyParcelsTableModel.setNumRows(0);
+
+        ArrayList<ArrayList<String>> MyParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), " +
+                "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p " +
+                "WHERE d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu and d.email = '"
+                +CurrentUser.Values.get(2)+"';");
+
+        for(ArrayList<String> iter : MyParcelsList)
+            MyParcelsTableModel.addRow(new Vector<String>(iter));
+
+        // Components
 
         mojePaczkiButton.addActionListener(new ActionListener()
         {
@@ -114,9 +139,7 @@ public class MainWindow
                         +CurrentUser.Values.get(2)+"';");
 
                 for(ArrayList<String> iter : MyParcelsList)
-                {
                     MyParcelsTableModel.addRow(new Vector<String>(iter));
-                }
             }
         });
 
@@ -135,9 +158,7 @@ public class MainWindow
                         "WHERE d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu;");
 
                 for(ArrayList<String> iter : AllParcelsList)
-                {
                     AllParcelsTableModel.addRow(new Vector<String>(iter));
-                }
             }
         });
 
@@ -155,9 +176,7 @@ public class MainWindow
                         "WHERE z.id_dostawcy = d.id_dostawcy GROUP BY d.id_dostawcy;");
 
                 for(ArrayList<String> iter : CouriersList)
-                {
                     CouriersTableModel.addRow(new Vector<String>(iter));
-                }
             }
         });
 
@@ -213,11 +232,19 @@ public class MainWindow
                 int row = MyParcelsTable.rowAtPoint(evt.getPoint());
                 int col = MyParcelsTable.columnAtPoint(evt.getPoint());
 
-                ParcelDetails parcelDetails = new ParcelDetails();
+                ArrayList<ArrayList<String>> ParcelDetails = selector.select("SELECT z.id_zamowienia, CONCAT(d.imie, ' ', d.nazwisko), " +
+                        "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE" +
+                        " d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu and d.email = '" +
+                        CurrentUser.Values.get(2)+ "' LIMIT " + row +  ", 1;");
+
+                ArrayList<ArrayList<String>> ProductListArray = selector.select("SELECT zp.ilosc, p.nazwa, p.cena, p.waga, p.wymiary" +
+                        " FROM produkt p, zamowiony_produkt zp WHERE zp.id_produktu = p.id_produktu AND zp.id_zamowienia = " + ParcelDetails.get(0).get(0) + " ORDER BY zp.id_zamowienia;");
+
+                ParcelDetails parcelDetails = new ParcelDetails(ParcelDetails, ProductListArray);
                 parcelDetails.createWindow();
                 parcelDetails.setPosition(row);
-//
-//              JOptionPane.showMessageDialog(frame, "Kliknąłeś na "+ row + "pozycję", "Info", JOptionPane.PLAIN_MESSAGE);
+
+            //   JOptionPane.showMessageDialog(frame, "Kliknąłeś na "+ (row+1) + "pozycję", "Info", JOptionPane.PLAIN_MESSAGE);
             }
         });
 
@@ -231,11 +258,18 @@ public class MainWindow
                 int row = AllParcelsTable.rowAtPoint(evt.getPoint());
                 int col = AllParcelsTable.columnAtPoint(evt.getPoint());
 
-                ParcelDetails parcelDetails = new ParcelDetails();
+                ArrayList<ArrayList<String>> ParcelDetails = selector.select("SELECT z.id_zamowienia, CONCAT(d.imie, ' ', d.nazwisko), " +
+                        "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE" +
+                        " d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu LIMIT " + row +  ", 1;");
+
+                ArrayList<ArrayList<String>> ProductListArray = selector.select("SELECT zp.ilosc, p.nazwa, p.cena, p.waga, p.wymiary" +
+                        " FROM produkt p, zamowiony_produkt zp WHERE zp.id_produktu = p.id_produktu AND zp.id_zamowienia = " + (row+1) + " ORDER BY zp.id_zamowienia;");
+
+                ParcelDetails parcelDetails = new ParcelDetails(ParcelDetails, ProductListArray);
                 parcelDetails.createWindow();
                 parcelDetails.setPosition(row);
 
-//                JOptionPane.showMessageDialog(frame, "Kliknąłeś na "+ row + "pozycję", "Info", JOptionPane.PLAIN_MESSAGE);
+            //    JOptionPane.showMessageDialog(frame, "Kliknąłeś na "+ (row+1) + " pozycję", "Info", JOptionPane.PLAIN_MESSAGE);
             }
         });
 
@@ -249,7 +283,7 @@ public class MainWindow
                 int row = CouriersTable.rowAtPoint(evt.getPoint());
                 int col = CouriersTable.columnAtPoint(evt.getPoint());
 
-                JOptionPane.showMessageDialog(frame, "Kliknąłeś na "+ row + "pozycję", "Info", JOptionPane.PLAIN_MESSAGE);
+            //    JOptionPane.showMessageDialog(frame, "Kliknąłeś na "+ row + "pozycję", "Info", JOptionPane.PLAIN_MESSAGE);
             }
         });
 
@@ -418,7 +452,7 @@ public class MainWindow
                     if(JOptionPane.showConfirmDialog(frame, "Usunąć konto? Tej operacji NIE MOŻNA COFNĄĆ!", "Potwierdź operację", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)==JOptionPane.YES_OPTION)
                     {
                         queryHandler.insert("DELETE FROM Dostawca where email='"+ CurrentUser.Values.get(2) +"';");
-                        logger.trace(CurrentUser.Values.get(2) + "removed his account");
+                        logger.trace(CurrentUser.Values.get(2) + " removed his account");
                         CurrentUser.Values = null;
                         new LoginForm().createWindow();
                         frame.dispose();
@@ -434,14 +468,13 @@ public class MainWindow
 
     public void createWindow()
     {
-        frame = new JFrame("<insert window title here>");
-        frame.setContentPane(new MainWindow().MainPanel);
+        frame = new JFrame("DBmanager - moje paczki");
+        frame.setContentPane(this.MainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
         frame.setSize(720, 500);
         frame.setLocationRelativeTo(null);
-        wszystkiePaczkiButton.doClick();
     }
 
     private void createUIComponents()
@@ -463,16 +496,5 @@ public class MainWindow
         AllParcelsTable.setModel(new DefaultTableModel(AllParcelsColumns, 0));
         AllParcelsTableModel = (DefaultTableModel) AllParcelsTable.getModel();
         AllParcelsTable.setDefaultEditor(Object.class, null);
-
-        /*
-        ArrayList<ArrayList<String>> MyParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), " +
-                "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p " +
-                "WHERE d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu and d.email = '"
-                +CurrentUser.Values.get(2)+"';");
-
-        for(ArrayList<String> iter : MyParcelsList)
-        {
-            MyParcelsTableModel.addRow(new Vector<String>(iter));
-        }*/
     }
 }

@@ -42,6 +42,8 @@ public class LoginForm
 
     public LoginForm()
     {
+        System.out.println("Creating LoginForm");
+
         Cards.add(StartScreen, "StartScreen");
         Cards.add(LogIn, "LogIn");
         Cards.add(SignIn, "SignIn");
@@ -57,6 +59,7 @@ public class LoginForm
         try
         {
             DBConnection.GetInstance().getConnection();
+            System.out.println("getting instance");
         }
         catch (SQLException e)
         {
@@ -68,8 +71,7 @@ public class LoginForm
             System.exit(1);
         }
 
-        logger.trace("Connected to Database");
-
+            logger.trace("Connected to Database");
 
         //// StartScreen ////
 
@@ -202,7 +204,7 @@ public class LoginForm
     void createWindow()
     {
         frame = new JFrame("Zaloguj lub zarejestruj się");
-        frame.setContentPane(new LoginForm().MainPanel);
+        frame.setContentPane(this.MainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);

@@ -15,10 +15,11 @@ public class ParcelDetails
     static JFrame frame;
     private JTable ProductList;
     private DefaultTableModel ProductListModel;
+    private JLabel IDLabel;
+    private JLabel CourierLabel;
     private JLabel ClientLabel;
     private JLabel PointLabel;
-    private JLabel Comments;
-    private JLabel Courier;
+    private JLabel CommentsLabel;
     private JPanel MainPanel;
 
     public void setPosition(int position)
@@ -26,25 +27,29 @@ public class ParcelDetails
         this.position = position;
     }
 
+    public ParcelDetails(ArrayList<ArrayList<String>> ParcelDetails, ArrayList<ArrayList<String>> ProductListArray)
+    {
+        ProductListModel.setNumRows(0);
+
+        IDLabel.setText(ParcelDetails.get(0).get(0));
+        CourierLabel.setText(ParcelDetails.get(0).get(1));
+        ClientLabel.setText(ParcelDetails.get(0).get(2));
+        PointLabel.setText(ParcelDetails.get(0).get(3));
+        CommentsLabel.setText(ParcelDetails.get(0).get(4));
+
+        for(ArrayList<String> iter : ProductListArray)
+            ProductListModel.addRow(new Vector<String>(iter));
+    }
+
     public void createWindow()
     {
         frame = new JFrame("Szczegóły przesyłki");
-        frame.setContentPane(new ParcelDetails().MainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(this.MainPanel);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-        frame.setSize(720, 500);
+        frame.setSize(500, 400);
         frame.setLocationRelativeTo(null);
-
-        ProductListModel.setNumRows(0);
-
-        ArrayList<ArrayList<String>> ProductList = selector.select("SELECT zp.ilosc, p.nazwa, p.cena, p.waga, p.wymiary FROM zamowienie z," +
-                " zamowiony_produkt zp, produkt p WHERE zp.id_produktu = p.id_produktu AND z.id_zamowienia = zp.id_zamowienia AND z.id_zamowienia = " + position + ";");
-
-        for(ArrayList<String> iter : ProductList)
-        {
-            ProductListModel.addRow(new Vector<String>(iter));
-        }
     }
 
     private void createUIComponents()

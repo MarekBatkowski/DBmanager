@@ -47,7 +47,6 @@ public class DBConnection
         try // try to read from file
         {
             properties.load(new FileInputStream("dbconnection.properties"));
-            logger.trace("Connection parameters loaded properly");
         }
         catch (IOException e)   // no file exists
         {
@@ -76,7 +75,7 @@ public class DBConnection
 
         this.connection = DriverManager.getConnection(DBURL, userName, password);
 
-        System.out.println("Connected to database");
-        logger.trace("Connected to database");
+        logger.trace("Connection parameters loaded properly");
+    //    System.out.println("Connected to database");
     }
 }
