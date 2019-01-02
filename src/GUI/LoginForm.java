@@ -205,7 +205,6 @@ public class LoginForm
                     return;
                 }
 
-
             /*
                 if(SignUpEmail.getText().length()<10)
                 {
