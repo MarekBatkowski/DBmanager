@@ -6,8 +6,14 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import SQLhandling.*;
 import org.apache.log4j.Logger;
@@ -58,6 +64,12 @@ public class MainWindow
     private JPasswordField ConfirmDelete;
     private JButton usuńKontoButton;
 
+    private static final Pattern emailRegEx = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
+    private static final Pattern passwordRegEx = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$");
+    private static final Pattern nameRegEx = Pattern.compile("^[A-Z]+[a-z]{2,}");
+
+    final Logger logger = Logger.getLogger(MainWindow.class);
+
     void ChangeSetEnabled(boolean bool)
     {
         if(bool)
@@ -94,8 +106,6 @@ public class MainWindow
     public MainWindow()
     {
         System.out.println("Creating MainForm");
-
-        final Logger logger = Logger.getLogger(MainWindow.class);
 
         Cards.add(MyParcels, "MyParcels");
         Cards.add(AllParcels, "AllParcels");
@@ -381,15 +391,31 @@ public class MainWindow
                 {
                     if(String.valueOf(ChangePassword.getPassword()).equals(String.valueOf(ChangePasswordRepeat.getPassword())))    // check new password
                     {
-                        if(EmailCheckBox.isSelected() && ChangeEmail.getText().length()<10)
+                        if(NameCheckBox.isSelected() && !nameRegEx.matcher(ChangeName.getText()).matches())
                         {
-                            JOptionPane.showMessageDialog(frame, "Email jest za krótki!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, "Imię jest nieprawidłowe!", "Błąd", JOptionPane.PLAIN_MESSAGE);
                             return;
                         }
 
-                        if(PasswordCheckBox.isSelected() && String.valueOf(ChangePassword.getPassword()).length()<8)
+                        if(SurnameCheckBox.isSelected() && !nameRegEx.matcher(ChangeSurname.getText()).matches())
                         {
-                            JOptionPane.showMessageDialog(frame, "Nowe hasło jest za krótkie!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, "Nazwisko jest nieprawidłowe!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                            return;
+                        }
+
+                        if(EmailCheckBox.isSelected() && !emailRegEx.matcher(ChangeEmail.getText()).matches())
+                        {
+                            JOptionPane.showMessageDialog(frame, "Email jest nieprawidłowy!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                            return;
+                        }
+
+                        if(PasswordCheckBox.isSelected() && !passwordRegEx.matcher(String.valueOf(ChangePassword.getPassword())).matches())
+                        {
+                            JOptionPane.showMessageDialog(frame,
+                                    "Hasło nieprawidłowe!\n\n" +
+                                             "Hasło musi:\n" +
+                                             "-zawierać co najmniej jedną cyfrę, jedną wielką i jedną małą literę\n" +
+                                             "-mieć co najmniej 8 znaków.", "Błąd", JOptionPane.PLAIN_MESSAGE);
                             return;
                         }
 
@@ -470,11 +496,24 @@ public class MainWindow
     {
         frame = new JFrame("DBmanager - moje paczki");
         frame.setContentPane(this.MainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
         frame.setSize(720, 500);
         frame.setLocationRelativeTo(null);
+
+        frame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent we)
+            {
+                if(JOptionPane.showConfirmDialog(frame, "Czy chcesz wyjść?", "Potwierdź operację", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
+                {
+                    logger.trace("Application closed with exit code 0");
+                    System.exit(0);
+                }
+            }
+        });
     }
 
     private void createUIComponents()

@@ -9,8 +9,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class LoginForm
 {
@@ -40,6 +43,12 @@ public class LoginForm
     private JButton WsteczButton1;
     private JButton ZałóżKontoButton;
 
+    private static final Pattern emailRegEx = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
+    private static final Pattern passwordRegEx = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$");
+    private static final Pattern nameRegEx = Pattern.compile("^[A-Z]+[a-z]{2,}");
+
+    final Logger logger = Logger.getLogger(LoginForm.class);
+
     public LoginForm()
     {
         System.out.println("Creating LoginForm");
@@ -53,7 +62,6 @@ public class LoginForm
 
         Selector selector = new Selector();
         QueryHandler queryHandler = new QueryHandler();
-        final Logger logger = Logger.getLogger(LoginForm.class);
         CurrentUser.Values = null;
 
         try
@@ -112,7 +120,6 @@ public class LoginForm
             }
         });
 
-
         //// LogIn ////
 
         ZalogujSieButton.addActionListener(new ActionListener()
@@ -124,7 +131,7 @@ public class LoginForm
                 String haslo = String.valueOf(LogInPassword.getPassword());
 
                 ArrayList<ArrayList<String>> result = selector.select("SELECT imie, nazwisko, email, haslo FROM Dostawca " +
-                                                                        "WHERE email = '" + email + "' and haslo = '" + haslo + "'");
+                                                                        "WHERE email = '" + email + "' and haslo = '" + haslo + "';");
 
                 if (result.size() == 1)
                 {
@@ -136,9 +143,16 @@ public class LoginForm
                 }
                 else
                 {
-                    logger.warn("Incorrect user data provided using email: " + email);
-
-                    JOptionPane.showMessageDialog(frame, "Niepoprawne dane!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                    if(selector.select("SELECT * FROM Dostawca WHERE email = '" + email + "';").size()==0)
+                    {
+                        JOptionPane.showMessageDialog(frame, "Niewłaściwy email!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                        logger.warn("Incorrect email provided when attempting to login: " + email);
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(frame, "Niewłaściwe hasło!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                        logger.warn("Incorrect password provided when attempting to login with email: " + email);
+                    }
                 }
             }
         });
@@ -163,6 +177,36 @@ public class LoginForm
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                if(!nameRegEx.matcher(SignUpName.getText()).matches())
+                {
+                    JOptionPane.showMessageDialog(frame, "Imię jest nieprawidłowe!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+
+                if(!nameRegEx.matcher(SignUpSurname.getText()).matches())
+                {
+                    JOptionPane.showMessageDialog(frame, "Nazwisko jest nieprawidłowe!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+
+                if(!emailRegEx.matcher(SignUpEmail.getText()).matches())
+                {
+                    JOptionPane.showMessageDialog(frame, "Email jest nieprawidłowy!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+
+                if(!passwordRegEx.matcher(String.valueOf(SignUpPassword.getPassword())).matches())
+                {
+                    JOptionPane.showMessageDialog(frame,
+                            "Hasło nieprawidłowe!\n\n" +
+                                    "Hasło musi:\n" +
+                                    "-zawierać co najmniej jedną cyfrę, jedną wielką i jedną małą literę\n" +
+                                    "-mieć co najmniej 8 znaków.", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
+
+
+            /*
                 if(SignUpEmail.getText().length()<10)
                 {
                     JOptionPane.showMessageDialog(frame, "Email jest za krótki!", "Błąd", JOptionPane.PLAIN_MESSAGE);
@@ -174,6 +218,7 @@ public class LoginForm
                     JOptionPane.showMessageDialog(frame, "Hasło jest za krótkie!", "Błąd", JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
+            */
 
                 String imie = SignUpName.getText();
                 String nazwisko = SignUpSurname.getText();
@@ -205,12 +250,25 @@ public class LoginForm
     {
         frame = new JFrame("Zaloguj lub zarejestruj się");
         frame.setContentPane(this.MainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
         frame.setSize(340, 380);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
+
+        frame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent we)
+            {
+                if(JOptionPane.showConfirmDialog(frame, "Czy chcesz wyjść?", "Potwierdź operację", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
+                {
+                    logger.trace("Application closed with exit code 0");
+                    System.exit(0);
+                }
+            }
+        });
     }
 
     private void createUIComponents()
