@@ -11,6 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -46,12 +50,23 @@ public class LoginForm
     private static final Pattern emailRegEx = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
     private static final Pattern passwordRegEx = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$");
     private static final Pattern nameRegEx = Pattern.compile("^[A-Z]+[a-z]{2,}");
+    private static final Object[] confirmOptions = {"     Tak     ","     Nie     "};
 
+    MessageDigest digest = null;
     final Logger logger = Logger.getLogger(LoginForm.class);
 
     public LoginForm()
     {
-        System.out.println("Creating LoginForm");
+        try
+        {
+            digest = MessageDigest.getInstance("MD5");
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+        }
+
+    //    System.out.println("Creating LoginForm");
 
         Cards.add(StartScreen, "StartScreen");
         Cards.add(LogIn, "LogIn");
@@ -67,7 +82,7 @@ public class LoginForm
         try
         {
             DBConnection.GetInstance().getConnection();
-            System.out.println("getting instance");
+    //        System.out.println("getting instance");
         }
         catch (SQLException e)
         {
@@ -112,7 +127,8 @@ public class LoginForm
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if(JOptionPane.showConfirmDialog(frame, "Czy chcesz wyjść?", "Potwierdź operację", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
+                if(JOptionPane.showOptionDialog(frame, "Czy chcesz wyjść?", "Potwierdź operację",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, confirmOptions, confirmOptions[1])==JOptionPane.YES_OPTION)
                 {
                     logger.trace("Application closed with exit code 0");
                     System.exit(0);
@@ -128,10 +144,11 @@ public class LoginForm
             public void actionPerformed(ActionEvent e)
             {
                 String email = LogInEmail.getText();
-                String haslo = String.valueOf(LogInPassword.getPassword());
+                String password = String.valueOf(LogInPassword.getPassword());
+                String SHApassword = String.format("%032x", new BigInteger(1, digest.digest(password.getBytes(StandardCharsets.UTF_8))));
 
                 ArrayList<ArrayList<String>> result = selector.select("SELECT imie, nazwisko, email, haslo FROM Dostawca " +
-                                                                        "WHERE email = '" + email + "' and haslo = '" + haslo + "';");
+                                                                        "WHERE email = '" + email + "' and haslo = '" + SHApassword + "';");
 
                 if (result.size() == 1)
                 {
@@ -177,6 +194,8 @@ public class LoginForm
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                ArrayList<ArrayList<String>> Emails = selector.select("SELECT email FROM Dostawca");
+
                 if(!nameRegEx.matcher(SignUpName.getText()).matches())
                 {
                     JOptionPane.showMessageDialog(frame, "Imię jest nieprawidłowe!", "Błąd", JOptionPane.PLAIN_MESSAGE);
@@ -193,6 +212,15 @@ public class LoginForm
                 {
                     JOptionPane.showMessageDialog(frame, "Email jest nieprawidłowy!", "Błąd", JOptionPane.PLAIN_MESSAGE);
                     return;
+                }
+
+                for(ArrayList<String> iter : Emails)
+                {
+                    if (iter.get(0).equals(SignUpEmail.getText()))
+                    {
+                        JOptionPane.showMessageDialog(frame, "Email jest już zajęty!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                        return;
+                    }
                 }
 
                 if(!passwordRegEx.matcher(String.valueOf(SignUpPassword.getPassword())).matches())
@@ -219,12 +247,13 @@ public class LoginForm
                 }
             */
 
-                String imie = SignUpName.getText();
-                String nazwisko = SignUpSurname.getText();
+                String name = SignUpName.getText();
+                String surname = SignUpSurname.getText();
                 String email = SignUpEmail.getText();
-                String haslo = String.valueOf(SignUpPassword.getPassword());
+                String password = String.valueOf(SignUpPassword.getPassword());
+                String SHApassword = String.format("%032x", new BigInteger(1, digest.digest(password.getBytes(StandardCharsets.UTF_8))));
 
-                queryHandler.insert("INSERT INTO dostawca(imie, nazwisko, email, haslo) VALUES ('" + imie + "', '" + nazwisko + "', '" + email + "', '" + haslo + "');");
+                queryHandler.insert("INSERT INTO dostawca(imie, nazwisko, email, haslo) VALUES ('" + name + "', '" + surname + "', '" + email + "', '" + SHApassword + "');");
                 JOptionPane.showMessageDialog(frame, "Dodano nowego użytownika!", "Operacja Pomyślna", JOptionPane.PLAIN_MESSAGE);
                 cards.show(Cards, "StartScreen");
 
@@ -261,7 +290,8 @@ public class LoginForm
             @Override
             public void windowClosing(WindowEvent we)
             {
-                if(JOptionPane.showConfirmDialog(frame, "Czy chcesz wyjść?", "Potwierdź operację", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
+                if(JOptionPane.showOptionDialog(frame, "Czy chcesz wyjść?", "Potwierdź operację",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, confirmOptions, confirmOptions[1])==JOptionPane.YES_OPTION)
                 {
                     logger.trace("Application closed with exit code 0");
                     System.exit(0);

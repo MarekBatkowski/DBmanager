@@ -8,6 +8,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.regex.Pattern;
@@ -64,7 +68,10 @@ public class MainWindow
     private static final Pattern emailRegEx = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
     private static final Pattern passwordRegEx = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$");
     private static final Pattern nameRegEx = Pattern.compile("^[A-Z]+[a-z]{2,}");
+    private static final Object[] confirmOptions = {"     Tak     ","     Nie     "};
 
+
+    MessageDigest digest = null;
     final Logger logger = Logger.getLogger(MainWindow.class);
 
     void ChangeSetEnabled(boolean bool)
@@ -102,7 +109,16 @@ public class MainWindow
 
     public MainWindow()
     {
-        System.out.println("Creating MainForm");
+        try
+        {
+            digest = MessageDigest.getInstance("MD5");
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+        }
+
+    //    System.out.println("Creating MainForm");
 
         Cards.add(MyParcels, "MyParcels");
         Cards.add(AllParcels, "AllParcels");
@@ -206,7 +222,8 @@ public class MainWindow
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if(JOptionPane.showConfirmDialog(frame, "Czy chcesz się wylogować?", "Potwierdź operację", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
+                if(JOptionPane.showOptionDialog(frame, "Czy chcesz się wylogować?", "Potwierdź operację",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, confirmOptions, confirmOptions[1])==JOptionPane.YES_OPTION)
                 {
                     logger.trace(CurrentUser.Values.get(2) + "logged out");
                     CurrentUser.Values = null;
@@ -221,7 +238,8 @@ public class MainWindow
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if(JOptionPane.showConfirmDialog(frame, "Czy chcesz wyjść?", "Potwierdź operację", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
+                if(JOptionPane.showOptionDialog(frame, "Czy chcesz wyjść?", "Potwierdź operację",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, confirmOptions, confirmOptions[1])==JOptionPane.YES_OPTION)
                 {
                     logger.trace("Application closed with exit code 0");
                     System.exit(0);
@@ -385,7 +403,10 @@ public class MainWindow
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if(String.valueOf(ConfirmPassword.getPassword()).equals(CurrentUser.Values.get(3)))    //  check password
+                String password = String.valueOf(ConfirmPassword.getPassword());
+                String SHApassword = String.format("%032x", new BigInteger(1, digest.digest(password.getBytes(StandardCharsets.UTF_8))));
+
+                if(SHApassword.equals(CurrentUser.Values.get(3)))    //  check password
                 {
                     if(String.valueOf(ChangePassword.getPassword()).equals(String.valueOf(ChangePasswordRepeat.getPassword())))    // check new password
                     {
@@ -442,8 +463,11 @@ public class MainWindow
 
                         if(PasswordCheckBox.isSelected())
                         {
-                            queryHandler.insert("UPDATE Dostawca SET haslo = '" + String.valueOf(ChangePassword.getPassword()) + "' where email = '" + CurrentUser.Values.get(2) + "';");
-                            CurrentUser.Values.set(3, String.valueOf(ChangePassword.getPassword()));
+                            String newPassword = String.valueOf(ChangePassword.getPassword());
+                            String SHAnewPassword = String.format("%032x", new BigInteger(1, digest.digest(newPassword.getBytes(StandardCharsets.UTF_8))));
+
+                            queryHandler.insert("UPDATE Dostawca SET haslo = '" + SHAnewPassword + "' where email = '" + CurrentUser.Values.get(2) + "';");
+                            CurrentUser.Values.set(3, SHAnewPassword);
                             logger.trace(CurrentUser.Values.get(2) + "changed email");
                         }
 
@@ -471,9 +495,13 @@ public class MainWindow
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if(String.valueOf(ConfirmDelete.getPassword()).equals(CurrentUser.Values.get(3)))    //  check password
+                String password = String.valueOf(ConfirmDelete.getPassword());
+                String SHApassword = String.format("%032x", new BigInteger(1, digest.digest(password.getBytes(StandardCharsets.UTF_8))));
+
+                if(SHApassword.equals(CurrentUser.Values.get(3)))    //  check password
                 {
-                    if(JOptionPane.showConfirmDialog(frame, "Usunąć konto? Tej operacji NIE MOŻNA COFNĄĆ!", "Potwierdź operację", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE)==JOptionPane.YES_OPTION)
+                    if(JOptionPane.showOptionDialog(frame, "Usunąć konto? Tej operacji NIE MOŻNA COFNĄĆ!", "Potwierdź operację",
+                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, confirmOptions, confirmOptions[1])==JOptionPane.YES_OPTION)
                     {
                         queryHandler.insert("DELETE FROM Dostawca where email='"+ CurrentUser.Values.get(2) +"';");
                         logger.trace(CurrentUser.Values.get(2) + " removed his account");
@@ -505,7 +533,8 @@ public class MainWindow
             @Override
             public void windowClosing(WindowEvent we)
             {
-                if(JOptionPane.showConfirmDialog(frame, "Czy chcesz wyjść?", "Potwierdź operację", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
+                if(JOptionPane.showOptionDialog(frame, "Czy chcesz wyjść?", "Potwierdź operację",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, confirmOptions, confirmOptions[1])==JOptionPane.YES_OPTION)
                 {
                     logger.trace("Application closed with exit code 0");
                     System.exit(0);
