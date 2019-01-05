@@ -1,6 +1,0 @@
-[TRACE] SQLhandling.DBConnection - Connection parameters loaded properly - 2019-01-02 03:25:52
-[TRACE] GUI.LoginForm - Connected to Database - 2019-01-02 03:25:52
-[TRACE] GUI.LoginForm - Created new user xdd2@xd.pl - 2019-01-02 03:26:29
-[TRACE] GUI.LoginForm - User xdd2@xd.pl logged - 2019-01-02 03:27:19
-[TRACE] GUI.MainWindow - xdd2@xd.plchanged email - 2019-01-02 03:29:43
-[TRACE] GUI.MainWindow - Application closed with exit code 0 - 2019-01-02 11:16:54
