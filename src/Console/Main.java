@@ -73,7 +73,7 @@ public class Main
                     System.out.println("haslo: ");
                     String haslo = scanner.nextLine();
 
-                    queryHandler.insert("INSERT INTO dostawca(imie, nazwisko, email, haslo) VALUES ('" + imie + "', '" + nazwisko + "', '" + email +"', '" + haslo + "');");
+                    queryHandler.execute("INSERT INTO dostawca(imie, nazwisko, email, haslo) VALUES ('" + imie + "', '" + nazwisko + "', '" + email +"', '" + haslo + "');");
                     System.out.println("Poprawnie dodano uzytkownika!");
 
                     logger.trace("Created new user " + email);
@@ -100,7 +100,7 @@ public class Main
                     {
                         System.out.println("Nowe imie: ");
                         temp = scanner.nextLine();
-                        queryHandler.insert("UPDATE Dostawca SET imie = '" + temp + "' where email = '" + currentUser.get(2)+ "';");
+                        queryHandler.execute("UPDATE Dostawca SET imie = '" + temp + "' where email = '" + currentUser.get(2)+ "';");
 
                         logger.trace(currentUser.get(2) + "changed name");
                     }
@@ -108,7 +108,7 @@ public class Main
                     {
                         System.out.println("Nowe nazwisko: ");
                         temp = scanner.nextLine();
-                        queryHandler.insert("UPDATE Dostawca SET nazwisko = '" + temp + "' where email = '" + currentUser.get(2)+ "';");
+                        queryHandler.execute("UPDATE Dostawca SET nazwisko = '" + temp + "' where email = '" + currentUser.get(2)+ "';");
 
                         logger.trace(currentUser.get(2) + "changed surname");
                     }
@@ -119,14 +119,14 @@ public class Main
 
                         logger.trace(currentUser.get(2) + "changed email to " + temp);
 
-                        queryHandler.insert("UPDATE Dostawca SET email = '" + temp + "' where email = '" + currentUser.get(2)+ "';");
+                        queryHandler.execute("UPDATE Dostawca SET email = '" + temp + "' where email = '" + currentUser.get(2)+ "';");
                         currentUser = selector.select("SELECT imie, nazwisko, email, haslo FROM Dostawca WHERE email = '" + temp + "'").get(0);
                     }
                     else if(option==4)
                     {
                         System.out.println("Nowe haslo: ");
                         temp = scanner.nextLine();
-                        queryHandler.insert("UPDATE Dostawca SET haslo = '" + temp + "' where email = '" + currentUser.get(2)+ "';");
+                        queryHandler.execute("UPDATE Dostawca SET haslo = '" + temp + "' where email = '" + currentUser.get(2)+ "';");
 
                         logger.trace(currentUser.get(2) + "changed password");
                     }
@@ -149,7 +149,7 @@ public class Main
                     System.out.println("haslo: ");
                     String haslo = scanner.nextLine();
 
-                    queryHandler.insert("UPDATE Dostawca SET imie = '" + imie + "', Nazwisko = '" + nazwisko + "', email = '" + email + "', haslo = '" + haslo + "' where email = '" + currentUser.get(2)+ "';", connection);
+                    queryHandler.execute("UPDATE Dostawca SET imie = '" + imie + "', Nazwisko = '" + nazwisko + "', email = '" + email + "', haslo = '" + haslo + "' where email = '" + currentUser.get(2)+ "';", connection);
                     System.out.println("Dane zmodyfikowane");
 
                     currentUser = selector.select("SELECT imie, nazwisko, email, haslo FROM Dostawca WHERE email = '" + email + "'", connection).get(0);
@@ -169,7 +169,7 @@ public class Main
                 }
                 else if(option==3)
                 {
-                    queryHandler.insert("DELETE FROM Dostawca where email='"+ currentUser.get(2) +"';");
+                    queryHandler.execute("DELETE FROM Dostawca where email='"+ currentUser.get(2) +"';");
 
                     logger.trace(currentUser.get(2) + "removed his account");
 

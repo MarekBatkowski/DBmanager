@@ -96,6 +96,7 @@ public class LoginForm
 
             logger.trace("Connected to Database");
 
+
         //// StartScreen ////
 
         logInButton.addActionListener(new ActionListener()
@@ -136,6 +137,7 @@ public class LoginForm
             }
         });
 
+
         //// LogIn ////
 
         ZalogujSieButton.addActionListener(new ActionListener()
@@ -147,7 +149,7 @@ public class LoginForm
                 String password = String.valueOf(LogInPassword.getPassword());
                 String SHApassword = String.format("%032x", new BigInteger(1, digest.digest(password.getBytes(StandardCharsets.UTF_8))));
 
-                ArrayList<ArrayList<String>> result = selector.select("SELECT imie, nazwisko, email, haslo FROM Dostawca " +
+                ArrayList<ArrayList<String>> result = selector.select("SELECT * FROM Dostawca " +
                                                                         "WHERE email = '" + email + "' and haslo = '" + SHApassword + "';");
 
                 if (result.size() == 1)
@@ -156,7 +158,7 @@ public class LoginForm
                     new MainWindow().createWindow();
                     frame.dispose();
 
-                    logger.trace("User " + CurrentUser.Values.get(2) + " logged");
+                    logger.trace("User " + CurrentUser.Values.get(3) + " logged");
                 }
                 else
                 {
@@ -253,7 +255,7 @@ public class LoginForm
                 String password = String.valueOf(SignUpPassword.getPassword());
                 String SHApassword = String.format("%032x", new BigInteger(1, digest.digest(password.getBytes(StandardCharsets.UTF_8))));
 
-                queryHandler.insert("INSERT INTO dostawca(imie, nazwisko, email, haslo) VALUES ('" + name + "', '" + surname + "', '" + email + "', '" + SHApassword + "');");
+                queryHandler.execute("INSERT INTO dostawca(imie, nazwisko, email, haslo) VALUES ('" + name + "', '" + surname + "', '" + email + "', '" + SHApassword + "');");
                 JOptionPane.showMessageDialog(frame, "Dodano nowego użytownika!", "Operacja Pomyślna", JOptionPane.PLAIN_MESSAGE);
                 cards.show(Cards, "StartScreen");
 

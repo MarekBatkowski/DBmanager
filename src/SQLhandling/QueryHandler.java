@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class QueryHandler
 {
-    public void insert(String query)
+    public void execute(String query)
     {
         Statement stmt = null;
         try
@@ -16,7 +16,7 @@ public class QueryHandler
         }
         catch (SQLException e)
         {
-            System.out.println("Incorrect SQLhandling query!");
+            System.out.println("Incorrect query!");
             e.printStackTrace();
         }
     }

@@ -70,7 +70,6 @@ public class MainWindow
     private static final Pattern nameRegEx = Pattern.compile("^[A-Z]+[a-z]{2,}");
     private static final Object[] confirmOptions = {"     Tak     ","     Nie     "};
 
-
     MessageDigest digest = null;
     final Logger logger = Logger.getLogger(MainWindow.class);
 
@@ -139,7 +138,7 @@ public class MainWindow
         ArrayList<ArrayList<String>> MyParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), " +
                 "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p " +
                 "WHERE d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu and d.email = '"
-                +CurrentUser.Values.get(2)+"';");
+                +CurrentUser.Values.get(3)+"';");
 
         for(ArrayList<String> iter : MyParcelsList)
             MyParcelsTableModel.addRow(new Vector<String>(iter));
@@ -159,7 +158,7 @@ public class MainWindow
                 ArrayList<ArrayList<String>> MyParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), " +
                         "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p " +
                         "WHERE d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu and d.email = '"
-                        +CurrentUser.Values.get(2)+"';");
+                        +CurrentUser.Values.get(3)+"';");
 
                 for(ArrayList<String> iter : MyParcelsList)
                     MyParcelsTableModel.addRow(new Vector<String>(iter));
@@ -176,9 +175,21 @@ public class MainWindow
 
                 AllParcelsTableModel.setNumRows(0);
 
+                ArrayList<ArrayList<String>> AllParcelsList = selector.select("SELECT * FROM \n" +
+                        "(\n" +
+                        "SELECT CONCAT(d.imie, ' ', d.nazwisko), CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi, z.id_zamowienia FROM " +
+                        "dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy = d.id_dostawcy and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
+                        "UNION ALL\n" +
+                        "SELECT '', CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi, z.id_zamowienia FROM " +
+                        "zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy IS NULL and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
+                        ")\n" +
+                        "AS T ORDER BY T.id_zamowienia;");
+
+                /*
                 ArrayList<ArrayList<String>> AllParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), " +
                         "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p " +
                         "WHERE d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu;");
+                */
 
                 for(ArrayList<String> iter : AllParcelsList)
                     AllParcelsTableModel.addRow(new Vector<String>(iter));
@@ -211,9 +222,9 @@ public class MainWindow
                 cards.show(Cards, "MyAccount");
                 changeActiveCard(3);
 
-                CurrName.setText(CurrentUser.Values.get(0));
-                CurrSurname.setText(CurrentUser.Values.get(1));
-                CurrEmail.setText(CurrentUser.Values.get(2));
+                CurrName.setText(CurrentUser.Values.get(1));
+                CurrSurname.setText(CurrentUser.Values.get(2));
+                CurrEmail.setText(CurrentUser.Values.get(3));
             }
         });
 
@@ -225,7 +236,7 @@ public class MainWindow
                 if(JOptionPane.showOptionDialog(frame, "Czy chcesz się wylogować?", "Potwierdź operację",
                         JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, confirmOptions, confirmOptions[1])==JOptionPane.YES_OPTION)
                 {
-                    logger.trace(CurrentUser.Values.get(2) + "logged out");
+                    logger.trace(CurrentUser.Values.get(3) + "logged out");
                     CurrentUser.Values = null;
                     new LoginForm().createWindow();
                     frame.dispose();
@@ -261,12 +272,12 @@ public class MainWindow
                 ArrayList<ArrayList<String>> ParcelDetails = selector.select("SELECT z.id_zamowienia, CONCAT(d.imie, ' ', d.nazwisko), " +
                         "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE" +
                         " d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu and d.email = '" +
-                        CurrentUser.Values.get(2)+ "' LIMIT " + row +  ", 1;");
+                        CurrentUser.Values.get(3)+ "' LIMIT " + row +  ", 1;");
 
                 ArrayList<ArrayList<String>> ProductListArray = selector.select("SELECT zp.ilosc, p.nazwa, p.cena, p.waga, p.wymiary" +
                         " FROM produkt p, zamowiony_produkt zp WHERE zp.id_produktu = p.id_produktu AND zp.id_zamowienia = " + ParcelDetails.get(0).get(0) + " ORDER BY zp.id_zamowienia;");
 
-                ParcelDetails parcelDetails = new ParcelDetails(ParcelDetails, ProductListArray);
+                ParcelDetails parcelDetails = new ParcelDetails(ParcelDetails, ProductListArray, true, false);
                 parcelDetails.createWindow();
                 parcelDetails.setPosition(row);
 
@@ -284,14 +295,34 @@ public class MainWindow
                 int row = AllParcelsTable.rowAtPoint(evt.getPoint());
                 int col = AllParcelsTable.columnAtPoint(evt.getPoint());
 
+                /*
                 ArrayList<ArrayList<String>> ParcelDetails = selector.select("SELECT z.id_zamowienia, CONCAT(d.imie, ' ', d.nazwisko), " +
                         "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE" +
                         " d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu LIMIT " + row +  ", 1;");
+                */
+
+                ArrayList<ArrayList<String>> ParcelDetails = selector.select("SELECT * FROM \n" +
+                        "(\n" +
+                        "SELECT z.id_zamowienia, CONCAT(d.imie, ' ', d.nazwisko), CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM " +
+                        "dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy = d.id_dostawcy and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
+                        "UNION ALL\n" +
+                        "SELECT z.id_zamowienia, '-', CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM " +
+                        "zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy IS NULL and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
+                        ")\n" +
+                        "AS T ORDER BY T.id_zamowienia LIMIT " + row + ", 1;");
 
                 ArrayList<ArrayList<String>> ProductListArray = selector.select("SELECT zp.ilosc, p.nazwa, p.cena, p.waga, p.wymiary" +
                         " FROM produkt p, zamowiony_produkt zp WHERE zp.id_produktu = p.id_produktu AND zp.id_zamowienia = " + (row+1) + " ORDER BY zp.id_zamowienia;");
 
-                ParcelDetails parcelDetails = new ParcelDetails(ParcelDetails, ProductListArray);
+                ArrayList<ArrayList<String>> temp = selector.select("SELECT id_dostawcy FROM zamowienie WHERE id_zamowienia = " + (row+1) + ";");
+                String id_dostawcy = temp.get(0).get(0);
+
+                boolean ResignEnable = false;
+                boolean TakeOverEnable = (id_dostawcy == null);
+                if(!TakeOverEnable)
+                    ResignEnable = (id_dostawcy.equals(CurrentUser.Values.get(0)));
+
+                ParcelDetails parcelDetails = new ParcelDetails(ParcelDetails, ProductListArray, ResignEnable, TakeOverEnable);
                 parcelDetails.createWindow();
                 parcelDetails.setPosition(row);
 
@@ -406,7 +437,7 @@ public class MainWindow
                 String password = String.valueOf(ConfirmPassword.getPassword());
                 String SHApassword = String.format("%032x", new BigInteger(1, digest.digest(password.getBytes(StandardCharsets.UTF_8))));
 
-                if(SHApassword.equals(CurrentUser.Values.get(3)))    //  check password
+                if(SHApassword.equalsIgnoreCase(CurrentUser.Values.get(4)))    //  check password
                 {
                     if(String.valueOf(ChangePassword.getPassword()).equals(String.valueOf(ChangePasswordRepeat.getPassword())))    // check new password
                     {
@@ -441,24 +472,24 @@ public class MainWindow
                         // data can be updated
                         if(NameCheckBox.isSelected())
                         {
-                            queryHandler.insert("UPDATE Dostawca SET imie = '" + ChangeName.getText() + "' where email = '" + CurrentUser.Values.get(2) + "';");
-                            CurrentUser.Values.set(0, ChangeName.getText());
-                            logger.trace(CurrentUser.Values.get(2) + "changed name");
+                            queryHandler.execute("UPDATE Dostawca SET imie = '" + ChangeName.getText() + "' WHERE email = '" + CurrentUser.Values.get(3) + "';");
+                            CurrentUser.Values.set(1, ChangeName.getText());
+                            logger.trace(CurrentUser.Values.get(3) + "changed name");
                         }
 
                         if(SurnameCheckBox.isSelected())
                         {
-                            queryHandler.insert("UPDATE Dostawca SET nazwisko = '" + ChangeSurname.getText() + "' where email = '" + CurrentUser.Values.get(2) + "';");
-                            CurrentUser.Values.set(1, ChangeSurname.getText());
-                            logger.trace(CurrentUser.Values.get(2) + "changed surname");
+                            queryHandler.execute("UPDATE Dostawca SET nazwisko = '" + ChangeSurname.getText() + "' WHERE email = '" + CurrentUser.Values.get(3) + "';");
+                            CurrentUser.Values.set(2, ChangeSurname.getText());
+                            logger.trace(CurrentUser.Values.get(3) + "changed surname");
                         }
 
                         if(EmailCheckBox.isSelected())
                         {
                             String oldMail = CurrentUser.Values.get(2);
-                            queryHandler.insert("UPDATE Dostawca SET email = '" + ChangeEmail.getText() + "' where email = '" + CurrentUser.Values.get(2) + "';");
-                            CurrentUser.Values.set(2, ChangeEmail.getText());
-                            logger.trace(oldMail + "changed email to " + CurrentUser.Values.get(2));
+                            queryHandler.execute("UPDATE Dostawca SET email = '" + ChangeEmail.getText() + "' WHERE email = '" + CurrentUser.Values.get(3) + "';");
+                            CurrentUser.Values.set(3, ChangeEmail.getText());
+                            logger.trace(oldMail + "changed email to " + CurrentUser.Values.get(3));
                         }
 
                         if(PasswordCheckBox.isSelected())
@@ -466,9 +497,9 @@ public class MainWindow
                             String newPassword = String.valueOf(ChangePassword.getPassword());
                             String SHAnewPassword = String.format("%032x", new BigInteger(1, digest.digest(newPassword.getBytes(StandardCharsets.UTF_8))));
 
-                            queryHandler.insert("UPDATE Dostawca SET haslo = '" + SHAnewPassword + "' where email = '" + CurrentUser.Values.get(2) + "';");
-                            CurrentUser.Values.set(3, SHAnewPassword);
-                            logger.trace(CurrentUser.Values.get(2) + "changed email");
+                            queryHandler.execute("UPDATE Dostawca SET haslo = '" + SHAnewPassword + "' WHERE email = '" + CurrentUser.Values.get(3) + "';");
+                            CurrentUser.Values.set(4, SHAnewPassword);
+                            logger.trace(CurrentUser.Values.get(3) + "changed email");
                         }
 
                         JOptionPane.showMessageDialog(frame, "Dane zaktualizowane", "Operacja przebiegła pomyślnie", JOptionPane.PLAIN_MESSAGE);
@@ -479,9 +510,9 @@ public class MainWindow
                         ChangePasswordRepeat.setText("");
                         ConfirmPassword.setText("");
 
-                        CurrName.setText(CurrentUser.Values.get(0));
-                        CurrSurname.setText(CurrentUser.Values.get(1));
-                        CurrEmail.setText(CurrentUser.Values.get(2));
+                        CurrName.setText(CurrentUser.Values.get(1));
+                        CurrSurname.setText(CurrentUser.Values.get(2));
+                        CurrEmail.setText(CurrentUser.Values.get(3));
                     }
                     else JOptionPane.showMessageDialog(frame, "Hasła się nie zgadzają!", "Błąd", JOptionPane.PLAIN_MESSAGE);
                 }
@@ -495,25 +526,36 @@ public class MainWindow
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                String password = String.valueOf(ConfirmDelete.getPassword());
-                String SHApassword = String.format("%032x", new BigInteger(1, digest.digest(password.getBytes(StandardCharsets.UTF_8))));
+                ArrayList<ArrayList<String>> temp = selector.select("SELECT COUNT(z.id_zamowienia) FROM zamowienie z WHERE id_dostawcy = " + CurrentUser.Values.get(0) + ";");
+                String LinkedParcels = temp.get(0).get(0);
 
-                if(SHApassword.equals(CurrentUser.Values.get(3)))    //  check password
+                if(!LinkedParcels.equals("0"))
                 {
-                    if(JOptionPane.showOptionDialog(frame, "Usunąć konto? Tej operacji NIE MOŻNA COFNĄĆ!", "Potwierdź operację",
-                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, confirmOptions, confirmOptions[1])==JOptionPane.YES_OPTION)
-                    {
-                        queryHandler.insert("DELETE FROM Dostawca where email='"+ CurrentUser.Values.get(2) +"';");
-                        logger.trace(CurrentUser.Values.get(2) + " removed his account");
-                        CurrentUser.Values = null;
-                        new LoginForm().createWindow();
-                        frame.dispose();
-
-                        JOptionPane.showMessageDialog(frame, "Twoje konto zostało usunięte.", "Operacja przebiegła pomyślnie", JOptionPane.PLAIN_MESSAGE);
-                    }
-                    else ConfirmDelete.setText("");
+                    JOptionPane.showMessageDialog(frame, "Nie możesz usunąć konta powiązanego z jakąkolwiek ilością paczek!\n" +
+                            "Ilośc powiązanych paczek: " + LinkedParcels, "Operacja nieudana", JOptionPane.PLAIN_MESSAGE);
                 }
-                else JOptionPane.showMessageDialog(frame, "Niepoprawne hasło!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                else
+                {
+                    String password = String.valueOf(ConfirmDelete.getPassword());
+                    String SHApassword = String.format("%032x", new BigInteger(1, digest.digest(password.getBytes(StandardCharsets.UTF_8))));
+
+                    if(SHApassword.equalsIgnoreCase(CurrentUser.Values.get(4)))    //  check password
+                    {
+                        if(JOptionPane.showOptionDialog(frame, "Usunąć konto? Tej operacji NIE MOŻNA COFNĄĆ!", "Potwierdź operację",
+                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, confirmOptions, confirmOptions[1])==JOptionPane.YES_OPTION)
+                        {
+                            queryHandler.execute("DELETE FROM Dostawca where email='"+ CurrentUser.Values.get(3) +"';");
+                            logger.trace(CurrentUser.Values.get(3) + " removed his account");
+                            CurrentUser.Values = null;
+                            new LoginForm().createWindow();
+                            frame.dispose();
+
+                            JOptionPane.showMessageDialog(frame, "Twoje konto zostało usunięte.", "Operacja przebiegła pomyślnie", JOptionPane.PLAIN_MESSAGE);
+                        }
+                        else ConfirmDelete.setText("");
+                    }
+                    else JOptionPane.showMessageDialog(frame, "Niepoprawne hasło!", "Błąd", JOptionPane.PLAIN_MESSAGE);
+                }
             }
         });
     }
