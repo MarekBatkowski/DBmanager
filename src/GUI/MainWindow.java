@@ -142,8 +142,8 @@ public class MainWindow
     {
         CouriersTableModel.setNumRows(0);
 
-        ArrayList<ArrayList<String>> CouriersList = selector.select("SELECT d.imie, d.nazwisko, d.email, COUNT(z.id_zamowienia) FROM dostawca d, zamowienie z " +
-                "WHERE z.id_dostawcy = d.id_dostawcy GROUP BY d.id_dostawcy;");
+        ArrayList<ArrayList<String>> CouriersList = selector.select("SELECT d.imie, d.nazwisko, d.email, COUNT(z.id_zamowienia) FROM" +
+                " dostawca d LEFT JOIN zamowienie z ON d.id_dostawcy = z.id_dostawcy GROUP BY d.id_dostawcy;");
 
         for(ArrayList<String> iter : CouriersList)
             CouriersTableModel.addRow(new Vector<String>(iter));
@@ -530,7 +530,7 @@ public class MainWindow
                 if(!LinkedParcels.equals("0"))
                 {
                     JOptionPane.showMessageDialog(frame, "Nie możesz usunąć konta powiązanego z jakąkolwiek ilością paczek!\n" +
-                            "Ilośc powiązanych paczek: " + LinkedParcels, "Operacja nieudana", JOptionPane.PLAIN_MESSAGE);
+                            "Ilość powiązanych paczek: " + LinkedParcels, "Operacja nieudana", JOptionPane.PLAIN_MESSAGE);
                 }
                 else
                 {
