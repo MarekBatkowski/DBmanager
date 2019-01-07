@@ -56,33 +56,34 @@ public class MainWindow
     private JPasswordField ChangePassword;
     private JPasswordField ChangePasswordRepeat;
     private JPasswordField ConfirmPassword;
-    private JButton zmieńDaneButton;
+    private JButton zmienDaneButton;
     private JCheckBox NameCheckBox;
     private JCheckBox SurnameCheckBox;
     private JCheckBox EmailCheckBox;
     private JCheckBox PasswordCheckBox;
     private JSeparator Separator;
     private JPasswordField ConfirmDelete;
-    private JButton usuńKontoButton;
+    private JButton usunKontoButton;
 
     private static final Pattern emailRegEx = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
     private static final Pattern passwordRegEx = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$");
     private static final Pattern nameRegEx = Pattern.compile("^[A-Z]+[a-z]{2,}");
     private static final Object[] confirmOptions = {"     Tak     ","     Nie     "};
 
-    MessageDigest digest = null;
-    final Logger logger = Logger.getLogger(MainWindow.class);
+    private MessageDigest digest = null;
+    private final Logger logger = Logger.getLogger(MainWindow.class);
+    private MainWindow mainInstance = this;
 
     void ChangeSetEnabled(boolean bool)
     {
         if(bool)
         {
-            zmieńDaneButton.setEnabled(true);
+            zmienDaneButton.setEnabled(true);
             ConfirmPassword.setEnabled(true);
         }
         else
         {
-            zmieńDaneButton.setEnabled(false);
+            zmienDaneButton.setEnabled(false);
             ConfirmPassword.setEnabled(false);
             ConfirmPassword.setText("");
         }
@@ -104,6 +105,48 @@ public class MainWindow
         if(card==1) frame.setTitle("DBmanager - wszystkie paczki");
         if(card==2) frame.setTitle("DBmanager - dostawcy");
         if(card==3) frame.setTitle("DBmanager - moje konto");
+    }
+
+    void UpdateMyParcels()
+    {
+        MyParcelsTableModel.setNumRows(0);
+
+        ArrayList<ArrayList<String>> MyParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), " +
+                "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p " +
+                "WHERE d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu and d.email = '"
+                +CurrentUser.Values.get(3)+"';");
+
+        for(ArrayList<String> iter : MyParcelsList)
+            MyParcelsTableModel.addRow(new Vector<String>(iter));
+    }
+
+    void UpdateAllParcels()
+    {
+        AllParcelsTableModel.setNumRows(0);
+
+        ArrayList<ArrayList<String>> AllParcelsList = selector.select("SELECT * FROM \n" +
+                "(\n" +
+                "SELECT CONCAT(d.imie, ' ', d.nazwisko), CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi, z.id_zamowienia FROM " +
+                "dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy = d.id_dostawcy and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
+                "UNION ALL\n" +
+                "SELECT '', CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi, z.id_zamowienia FROM " +
+                "zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy IS NULL and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
+                ")\n" +
+                "AS T ORDER BY T.id_zamowienia;");
+
+        for(ArrayList<String> iter : AllParcelsList)
+            AllParcelsTableModel.addRow(new Vector<String>(iter));
+    }
+
+    void UpdateAllCouriers()
+    {
+        CouriersTableModel.setNumRows(0);
+
+        ArrayList<ArrayList<String>> CouriersList = selector.select("SELECT d.imie, d.nazwisko, d.email, COUNT(z.id_zamowienia) FROM dostawca d, zamowienie z " +
+                "WHERE z.id_dostawcy = d.id_dostawcy GROUP BY d.id_dostawcy;");
+
+        for(ArrayList<String> iter : CouriersList)
+            CouriersTableModel.addRow(new Vector<String>(iter));
     }
 
     public MainWindow()
@@ -132,16 +175,7 @@ public class MainWindow
         mojePaczkiButton.setBackground(Color.WHITE);
 
         // changeActiveCard(0);
-
-        MyParcelsTableModel.setNumRows(0);
-
-        ArrayList<ArrayList<String>> MyParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), " +
-                "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p " +
-                "WHERE d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu and d.email = '"
-                +CurrentUser.Values.get(3)+"';");
-
-        for(ArrayList<String> iter : MyParcelsList)
-            MyParcelsTableModel.addRow(new Vector<String>(iter));
+        UpdateMyParcels();
 
         // Components
 
@@ -152,16 +186,7 @@ public class MainWindow
             {
                 cards.show(Cards, "MyParcels");
                 changeActiveCard(0);
-
-                MyParcelsTableModel.setNumRows(0);
-
-                ArrayList<ArrayList<String>> MyParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), " +
-                        "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p " +
-                        "WHERE d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu and d.email = '"
-                        +CurrentUser.Values.get(3)+"';");
-
-                for(ArrayList<String> iter : MyParcelsList)
-                    MyParcelsTableModel.addRow(new Vector<String>(iter));
+                UpdateMyParcels();
             }
         });
 
@@ -172,27 +197,7 @@ public class MainWindow
             {
                 cards.show(Cards, "AllParcels");
                 changeActiveCard(1);
-
-                AllParcelsTableModel.setNumRows(0);
-
-                ArrayList<ArrayList<String>> AllParcelsList = selector.select("SELECT * FROM \n" +
-                        "(\n" +
-                        "SELECT CONCAT(d.imie, ' ', d.nazwisko), CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi, z.id_zamowienia FROM " +
-                        "dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy = d.id_dostawcy and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
-                        "UNION ALL\n" +
-                        "SELECT '', CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi, z.id_zamowienia FROM " +
-                        "zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy IS NULL and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
-                        ")\n" +
-                        "AS T ORDER BY T.id_zamowienia;");
-
-                /*
-                ArrayList<ArrayList<String>> AllParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), " +
-                        "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p " +
-                        "WHERE d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu;");
-                */
-
-                for(ArrayList<String> iter : AllParcelsList)
-                    AllParcelsTableModel.addRow(new Vector<String>(iter));
+                UpdateAllParcels();
             }
         });
 
@@ -203,14 +208,7 @@ public class MainWindow
             {
                 cards.show(Cards, "Couriers");
                 changeActiveCard(2);
-
-                CouriersTableModel.setNumRows(0);
-
-                ArrayList<ArrayList<String>> CouriersList = selector.select("SELECT d.imie, d.nazwisko, d.email, COUNT(z.id_zamowienia) FROM dostawca d, zamowienie z " +
-                        "WHERE z.id_dostawcy = d.id_dostawcy GROUP BY d.id_dostawcy;");
-
-                for(ArrayList<String> iter : CouriersList)
-                    CouriersTableModel.addRow(new Vector<String>(iter));
+                UpdateAllCouriers();
             }
         });
 
@@ -277,7 +275,7 @@ public class MainWindow
                 ArrayList<ArrayList<String>> ProductListArray = selector.select("SELECT zp.ilosc, p.nazwa, p.cena, p.waga, p.wymiary" +
                         " FROM produkt p, zamowiony_produkt zp WHERE zp.id_produktu = p.id_produktu AND zp.id_zamowienia = " + ParcelDetails.get(0).get(0) + " ORDER BY zp.id_zamowienia;");
 
-                ParcelDetails parcelDetails = new ParcelDetails(ParcelDetails, ProductListArray, true, false);
+                ParcelDetails parcelDetails = new ParcelDetails(ParcelDetails, ProductListArray, true, false, frame, mainInstance);
                 parcelDetails.createWindow();
                 parcelDetails.setPosition(row);
 
@@ -322,7 +320,7 @@ public class MainWindow
                 if(!TakeOverEnable)
                     ResignEnable = (id_dostawcy.equals(CurrentUser.Values.get(0)));
 
-                ParcelDetails parcelDetails = new ParcelDetails(ParcelDetails, ProductListArray, ResignEnable, TakeOverEnable);
+                ParcelDetails parcelDetails = new ParcelDetails(ParcelDetails, ProductListArray, ResignEnable, TakeOverEnable, frame, mainInstance);
                 parcelDetails.createWindow();
                 parcelDetails.setPosition(row);
 
@@ -429,7 +427,7 @@ public class MainWindow
             }
         });
 
-        zmieńDaneButton.addActionListener(new ActionListener()
+        zmienDaneButton.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
@@ -521,7 +519,7 @@ public class MainWindow
             }
         });
 
-        usuńKontoButton.addActionListener(new ActionListener()
+        usunKontoButton.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)

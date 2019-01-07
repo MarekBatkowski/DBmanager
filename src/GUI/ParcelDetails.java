@@ -5,10 +5,8 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -28,6 +26,7 @@ public class ParcelDetails
     private JPanel MainPanel;
     private JButton ResignButton;
     private JButton TakeOverButton;
+    private JFrame ParentFrame;
 
     final Logger logger = Logger.getLogger(MainWindow.class);
 
@@ -36,8 +35,9 @@ public class ParcelDetails
         this.position = position;
     }
 
-    public ParcelDetails(ArrayList<ArrayList<String>> ParcelDetails, ArrayList<ArrayList<String>> ProductListArray, boolean ResignEnabled, boolean TakeOverEnabled)
+    public ParcelDetails(ArrayList<ArrayList<String>> ParcelDetails, ArrayList<ArrayList<String>> ProductListArray, boolean ResignEnabled, boolean TakeOverEnabled, JFrame Parentframe, MainWindow mainInstance)
     {
+        this.ParentFrame = Parentframe;
         ProductListModel.setNumRows(0);
 
         IDLabel.setText(ParcelDetails.get(0).get(0));
@@ -71,6 +71,10 @@ public class ParcelDetails
                 queryHandler.execute("UPDATE Zamowienie SET id_dostawcy = '" + CurrentUser.Values.get(0) + "' WHERE id_zamowienia = '" + Parcel_Id + "';");
                 JOptionPane.showMessageDialog(frame, "Przesyłka została przypisana do Twojego konta.", "Operacja powiodła się", JOptionPane.PLAIN_MESSAGE);
                 logger.trace(CurrentUser.Values.get(3) + " linked parcel of ID: " + Parcel_Id + "to account");
+                ParentFrame.setEnabled(true);
+                ParentFrame.setVisible(true);
+                mainInstance.UpdateAllParcels();
+                mainInstance.UpdateMyParcels();
                 frame.dispose();
             }
         });
@@ -82,6 +86,10 @@ public class ParcelDetails
                 queryHandler.execute("UPDATE Zamowienie SET id_dostawcy = NULL WHERE id_zamowienia = '" + Parcel_Id + "';");
                 JOptionPane.showMessageDialog(frame, "Przypisanie paczki do Twojego konta zostało usunięte.", "Operacja powiodła się", JOptionPane.PLAIN_MESSAGE);
                 logger.trace(CurrentUser.Values.get(3) + " detatched parcel of ID: " + Parcel_Id + "from account");
+                ParentFrame.setEnabled(true);
+                ParentFrame.setVisible(true);
+                mainInstance.UpdateAllParcels();
+                mainInstance.UpdateMyParcels();
                 frame.dispose();
             }
         });
@@ -96,6 +104,18 @@ public class ParcelDetails
         frame.setVisible(true);
         frame.setSize(500, 300);
         frame.setLocationRelativeTo(null);
+        ParentFrame.setEnabled(false);
+
+        frame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent we)
+            {
+                frame.dispose();
+                ParentFrame.setEnabled(true);
+                ParentFrame.setVisible(true);
+            }
+        });
     }
 
     private void createUIComponents()
