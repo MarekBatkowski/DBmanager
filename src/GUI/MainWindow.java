@@ -124,15 +124,9 @@ public class MainWindow
     {
         AllParcelsTableModel.setNumRows(0);
 
-        ArrayList<ArrayList<String>> AllParcelsList = selector.select("SELECT * FROM \n" +
-                "(\n" +
-                "SELECT CONCAT(d.imie, ' ', d.nazwisko), CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi, z.id_zamowienia FROM " +
-                "dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy = d.id_dostawcy and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
-                "UNION ALL\n" +
-                "SELECT '', CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi, z.id_zamowienia FROM " +
-                "zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy IS NULL and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
-                ")\n" +
-                "AS T ORDER BY T.id_zamowienia;");
+        ArrayList<ArrayList<String>> AllParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM " +
+                "zamowienie z LEFT JOIN dostawca d ON z.id_dostawcy = d.id_dostawcy, klient k, punkt_odbioru p " +
+                "WHERE z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu ORDER BY z.id_zamowienia;");
 
         for(ArrayList<String> iter : AllParcelsList)
             AllParcelsTableModel.addRow(new Vector<String>(iter));
