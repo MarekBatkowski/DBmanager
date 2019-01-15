@@ -2,6 +2,7 @@ package GUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -64,6 +65,9 @@ public class MainWindow
     private JSeparator Separator;
     private JPasswordField ConfirmDelete;
     private JButton usunKontoButton;
+    private JTextField MyParcelsFilter;
+    private JTextField AllParcelsFilter;
+    private JTextField CouriersFilter;
 
     private static final Pattern emailRegEx = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
     private static final Pattern passwordRegEx = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$");
@@ -111,7 +115,7 @@ public class MainWindow
     {
         MyParcelsTableModel.setNumRows(0);
 
-        ArrayList<ArrayList<String>> MyParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), " +
+        ArrayList<ArrayList<String>> MyParcelsList = selector.select("SELECT z.id_zamowienia, CONCAT(d.imie, ' ', d.nazwisko), " +
                 "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p " +
                 "WHERE d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu and d.email = '"
                 +CurrentUser.Values.get(3)+"';");
@@ -124,9 +128,9 @@ public class MainWindow
     {
         AllParcelsTableModel.setNumRows(0);
 
-        ArrayList<ArrayList<String>> AllParcelsList = selector.select("SELECT CONCAT(d.imie, ' ', d.nazwisko), CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM " +
-                "zamowienie z LEFT JOIN dostawca d ON z.id_dostawcy = d.id_dostawcy, klient k, punkt_odbioru p " +
-                "WHERE z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu ORDER BY z.id_zamowienia;");
+        ArrayList<ArrayList<String>> AllParcelsList = selector.select("SELECT z.id_zamowienia, CONCAT(d.imie, ' ', d.nazwisko), " +
+                "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM zamowienie z LEFT JOIN dostawca d ON z.id_dostawcy = d.id_dostawcy, " +
+                "klient k, punkt_odbioru p WHERE z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu ORDER BY z.id_zamowienia;");
 
         for(ArrayList<String> iter : AllParcelsList)
             AllParcelsTableModel.addRow(new Vector<String>(iter));
@@ -258,8 +262,7 @@ public class MainWindow
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt)
             {
-                int row = MyParcelsTable.rowAtPoint(evt.getPoint());
-                int col = MyParcelsTable.columnAtPoint(evt.getPoint());
+                int row = MyParcelsTable.convertRowIndexToModel(MyParcelsTable.rowAtPoint(evt.getPoint()));
 
                 ArrayList<ArrayList<String>> ParcelDetails = selector.select("SELECT z.id_zamowienia, CONCAT(d.imie, ' ', d.nazwisko), " +
                         "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE" +
@@ -284,24 +287,11 @@ public class MainWindow
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt)
             {
-                int row = AllParcelsTable.rowAtPoint(evt.getPoint());
-                int col = AllParcelsTable.columnAtPoint(evt.getPoint());
+                int row = AllParcelsTable.convertRowIndexToModel(AllParcelsTable.rowAtPoint(evt.getPoint()));
 
-                /*
                 ArrayList<ArrayList<String>> ParcelDetails = selector.select("SELECT z.id_zamowienia, CONCAT(d.imie, ' ', d.nazwisko), " +
-                        "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE" +
-                        " d.id_dostawcy = z.id_dostawcy and k.id_klienta = z.id_klienta and z.id_punktu = p.id_punktu LIMIT " + row +  ", 1;");
-                */
-
-                ArrayList<ArrayList<String>> ParcelDetails = selector.select("SELECT * FROM \n" +
-                        "(\n" +
-                        "SELECT z.id_zamowienia, CONCAT(d.imie, ' ', d.nazwisko), CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM " +
-                        "dostawca d, zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy = d.id_dostawcy and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
-                        "UNION ALL\n" +
-                        "SELECT z.id_zamowienia, '-', CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM " +
-                        "zamowienie z, klient k, punkt_odbioru p WHERE z.id_dostawcy IS NULL and z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu\n" +
-                        ")\n" +
-                        "AS T ORDER BY T.id_zamowienia LIMIT " + row + ", 1;");
+                        "CONCAT(k.imie, ' ', k.nazwisko), p.oznaczenie, z.uwagi FROM zamowienie z LEFT JOIN dostawca d ON z.id_dostawcy = d.id_dostawcy, " +
+                        "klient k, punkt_odbioru p WHERE z.id_klienta = k.id_klienta and z.id_punktu = p.id_punktu ORDER BY z.id_zamowienia LIMIT " + row + ", 1;");
 
                 ArrayList<ArrayList<String>> ProductListArray = selector.select("SELECT zp.ilosc, p.nazwa, p.cena, p.waga, p.wymiary" +
                         " FROM produkt p, zamowiony_produkt zp WHERE zp.id_produktu = p.id_produktu AND zp.id_zamowienia = " + (row+1) + " ORDER BY zp.id_zamowienia;");
@@ -329,8 +319,7 @@ public class MainWindow
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt)
             {
-                int row = CouriersTable.rowAtPoint(evt.getPoint());
-                int col = CouriersTable.columnAtPoint(evt.getPoint());
+                int row = CouriersTable.convertRowIndexToModel(CouriersTable.rowAtPoint(evt.getPoint()));
 
             //    JOptionPane.showMessageDialog(frame, "Kliknąłeś na "+ row + "pozycję", "Info", JOptionPane.PLAIN_MESSAGE);
             }
@@ -550,6 +539,39 @@ public class MainWindow
                 }
             }
         });
+
+        MyParcelsFilter.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) MyParcelsTable.getModel());
+                sorter.setRowFilter(RowFilter.regexFilter(MyParcelsFilter.getText()));
+                MyParcelsTable.setRowSorter(sorter);
+            }
+        });
+
+        AllParcelsFilter.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) AllParcelsTable.getModel());
+                sorter.setRowFilter(RowFilter.regexFilter(AllParcelsFilter.getText()));
+                AllParcelsTable.setRowSorter(sorter);
+            }
+        });
+        
+        CouriersFilter.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) CouriersTable.getModel());
+                sorter.setRowFilter(RowFilter.regexFilter(CouriersFilter.getText()));
+                CouriersTable.setRowSorter(sorter);
+            }
+        });
     }
 
     public void createWindow()
@@ -579,22 +601,25 @@ public class MainWindow
 
     private void createUIComponents()
     {
+        MyParcelsTable = new JTable();
+        String[] MyParcelsColumns = {"ID", "Dostawca", "Klient", "Punkt", "Uwagi"};
+        MyParcelsTable.setModel(new DefaultTableModel(MyParcelsColumns, 0));
+        MyParcelsTableModel = (DefaultTableModel) MyParcelsTable.getModel();
+        MyParcelsTable.setDefaultEditor(Object.class, null);
+        MyParcelsTable.setAutoCreateRowSorter(true);
+
+        AllParcelsTable = new JTable();
+        String[] AllParcelsColumns = {"ID", "Dostawca", "Klient", "Punkt", "Uwagi"};
+        AllParcelsTable.setModel(new DefaultTableModel(AllParcelsColumns, 0));
+        AllParcelsTableModel = (DefaultTableModel) AllParcelsTable.getModel();
+        AllParcelsTable.setDefaultEditor(Object.class, null);
+        AllParcelsTable.setAutoCreateRowSorter(true);
+
         CouriersTable = new JTable();
         String[] CouriersColumns = {"Imię", "Nazwisko", "Email", "Przesyłki"};
         CouriersTable.setModel(new DefaultTableModel(CouriersColumns, 0));
         CouriersTableModel = (DefaultTableModel) CouriersTable.getModel();
         CouriersTable.setDefaultEditor(Object.class, null);
-
-        MyParcelsTable = new JTable();
-        String[] MyParcelsColumns = {"Dostawca", "Klient", "Punkt", "Uwagi"};
-        MyParcelsTable.setModel(new DefaultTableModel(MyParcelsColumns, 0));
-        MyParcelsTableModel = (DefaultTableModel) MyParcelsTable.getModel();
-        MyParcelsTable.setDefaultEditor(Object.class, null);
-
-        AllParcelsTable = new JTable();
-        String[] AllParcelsColumns = {"Dostawca", "Klient", "Punkt", "Uwagi"};
-        AllParcelsTable.setModel(new DefaultTableModel(AllParcelsColumns, 0));
-        AllParcelsTableModel = (DefaultTableModel) AllParcelsTable.getModel();
-        AllParcelsTable.setDefaultEditor(Object.class, null);
+        CouriersTable.setAutoCreateRowSorter(true);
     }
 }
