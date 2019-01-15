@@ -312,39 +312,6 @@ public class MainWindow
             }
         });
 
-        MyParcelsFilter.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) MyParcelsTable.getModel());
-                sorter.setRowFilter(RowFilter.regexFilter(MyParcelsFilter.getText()));
-                MyParcelsTable.setRowSorter(sorter);
-            }
-        });
-
-        AllParcelsFilter.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) AllParcelsTable.getModel());
-                sorter.setRowFilter(RowFilter.regexFilter(AllParcelsFilter.getText()));
-                AllParcelsTable.setRowSorter(sorter);
-            }
-        });
-
-        CouriersFilter.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) CouriersTable.getModel());
-                sorter.setRowFilter(RowFilter.regexFilter(CouriersFilter.getText()));
-                CouriersTable.setRowSorter(sorter);
-            }
-        });
-
         //// All Users ////
 
         CouriersTable.addMouseListener(new java.awt.event.MouseAdapter()
@@ -570,6 +537,38 @@ public class MainWindow
                     }
                     else JOptionPane.showMessageDialog(frame, "Niepoprawne hasło!", "Błąd", JOptionPane.PLAIN_MESSAGE);
                 }
+            }
+        });
+
+        MyParcelsFilter.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) MyParcelsTable.getModel());
+                sorter.setRowFilter(RowFilter.regexFilter(MyParcelsFilter.getText()));
+                MyParcelsTable.setRowSorter(sorter);
+            }
+        });
+
+        AllParcelsFilter.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) AllParcelsTable.getModel());
+                sorter.setRowFilter(RowFilter.regexFilter(AllParcelsFilter.getText()));
+                AllParcelsTable.setRowSorter(sorter);
+            }
+        });
+        CouriersFilter.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) CouriersTable.getModel());
+                sorter.setRowFilter(RowFilter.regexFilter(CouriersFilter.getText()));
+                CouriersTable.setRowSorter(sorter);
             }
         });
     }

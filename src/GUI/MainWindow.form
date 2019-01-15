@@ -247,6 +247,14 @@
                 <properties/>
                 <border type="none"/>
                 <children>
+                  <component id="839e" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Filtruj:"/>
+                    </properties>
+                  </component>
                   <component id="62547" class="javax.swing.JTextField" binding="CouriersFilter">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
@@ -254,14 +262,6 @@
                       </grid>
                     </constraints>
                     <properties/>
-                  </component>
-                  <component id="62ffa" class="javax.swing.JLabel">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Filtruj:"/>
-                    </properties>
                   </component>
                 </children>
               </grid>
