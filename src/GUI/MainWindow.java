@@ -5,10 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -540,36 +537,55 @@ public class MainWindow
             }
         });
 
-        MyParcelsFilter.addActionListener(new ActionListener()
+        MyParcelsFilter.addKeyListener(new KeyListener()
         {
             @Override
-            public void actionPerformed(ActionEvent e)
+            public void keyTyped(KeyEvent e)
             {
                 TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) MyParcelsTable.getModel());
                 sorter.setRowFilter(RowFilter.regexFilter(MyParcelsFilter.getText()));
                 MyParcelsTable.setRowSorter(sorter);
             }
+
+            @Override
+            public void keyPressed(KeyEvent e) {            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {            }
         });
 
-        AllParcelsFilter.addActionListener(new ActionListener()
+        AllParcelsFilter.addKeyListener(new KeyListener()
         {
             @Override
-            public void actionPerformed(ActionEvent e)
+            public void keyTyped(KeyEvent e)
             {
                 TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) AllParcelsTable.getModel());
                 sorter.setRowFilter(RowFilter.regexFilter(AllParcelsFilter.getText()));
                 AllParcelsTable.setRowSorter(sorter);
             }
+
+            @Override
+            public void keyPressed(KeyEvent e){            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {            }
         });
-        CouriersFilter.addActionListener(new ActionListener()
+
+        CouriersFilter.addKeyListener(new KeyListener()
         {
             @Override
-            public void actionPerformed(ActionEvent e)
+            public void keyTyped(KeyEvent e)
             {
                 TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) CouriersTable.getModel());
                 sorter.setRowFilter(RowFilter.regexFilter(CouriersFilter.getText()));
                 CouriersTable.setRowSorter(sorter);
             }
+
+            @Override
+            public void keyPressed(KeyEvent e) {            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {            }
         });
     }
 
