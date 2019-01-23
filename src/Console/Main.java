@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import SQLhandling.QueryHandler;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import SQLhandling.*;
 
@@ -16,7 +18,8 @@ public class Main
     static Selector selector = new Selector();
     static QueryHandler queryHandler = new QueryHandler();
 
-    static final Logger logger = Logger.getLogger(Main.class);
+    //static final Logger logger = Logger.getLogger(Main.class);
+    static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws SQLException, IOException
     {

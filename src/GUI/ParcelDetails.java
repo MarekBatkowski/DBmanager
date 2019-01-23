@@ -5,7 +5,9 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.*;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -39,7 +41,7 @@ public class ParcelDetails
     private JFrame ParentFrame;
     Float Sum;
 
-    final Logger logger = Logger.getLogger(MainWindow.class);
+    final Logger logger = LogManager.getLogger(MainWindow.class);
     private static final Object[] confirmOptions = {"     Tak     ","     Nie     "};
 
     public void setPosition(int position)
@@ -101,6 +103,7 @@ public class ParcelDetails
                 CourierLabel.setText(CurrentUser.Values.get(1) + " " + CurrentUser.Values.get(2));
             }
         });
+
         ResignButton.addActionListener(new ActionListener()
         {
             @Override
@@ -209,6 +212,8 @@ public class ParcelDetails
                         document.add(productList);
                         document.add(new Paragraph("\nRazem do zaplaty: " + String.format("%.2f", Sum)));
                         document.close();
+
+                        logger.trace(CurrentUser.Values.get(3) + " Saved parcel of ID: " + Parcel_Id + " to pdf");
                     }
                     catch (DocumentException el)
                     {

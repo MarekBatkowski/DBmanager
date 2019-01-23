@@ -15,7 +15,9 @@ import java.util.Vector;
 import java.util.regex.Pattern;
 
 import SQLhandling.*;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MainWindow
 {
@@ -72,7 +74,7 @@ public class MainWindow
     private static final Object[] confirmOptions = {"     Tak     ","     Nie     "};
 
     private MessageDigest digest = null;
-    private final Logger logger = Logger.getLogger(MainWindow.class);
+    private final Logger logger = LogManager.getLogger(MainWindow.class);
     private MainWindow mainInstance = this;
 
     void ChangeSetEnabled(boolean bool)
@@ -495,7 +497,6 @@ public class MainWindow
                     else JOptionPane.showMessageDialog(frame, "Hasła się nie zgadzają!", "Błąd", JOptionPane.PLAIN_MESSAGE);
                 }
                 else JOptionPane.showMessageDialog(frame, "Niepoprawne hasło!", "Błąd", JOptionPane.PLAIN_MESSAGE);
-
             }
         });
 

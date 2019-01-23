@@ -1,6 +1,8 @@
 package SQLhandling;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.sql.*;
@@ -8,7 +10,7 @@ import java.util.Properties;
 
 public class DBConnection
 {
-    static final Logger logger = Logger.getLogger(DBConnection.class);
+    static final Logger logger = LogManager.getLogger(DBConnection.class);
 
     private Connection connection;
 
@@ -24,20 +26,6 @@ public class DBConnection
         if(instance == null || instance.getConnection().isClosed())
             instance = new DBConnection();
         return instance;
-
-        /*
-        try
-        {
-            if(instance == null || instance.getConnection().isClosed())
-                instance = new DBConnection();
-        }
-        catch (SQLException e)
-        {
-            logger.error("Couldn't get connection to database");
-            e.printStackTrace();
-        }
-        return instance;
-        */
     }
 
     private DBConnection() throws SQLException
@@ -60,7 +48,8 @@ public class DBConnection
                 FileOutputStream output = new FileOutputStream(f);
                 properties.setProperty("userName", "root");
                 properties.setProperty("password", "");
-                properties.setProperty("DBURL", "jdbc:mysql://127.0.0.1:55555/Paczkomat?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+                properties.setProperty("DBURL", "jdbc:mysql://127.0.0.1:55555/Paczkomat?useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift" +
+                        "=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
                 properties.store(output, "Database connection paramaters");
             }
             catch (IOException el)
